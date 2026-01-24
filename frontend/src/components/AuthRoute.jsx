@@ -1,11 +1,11 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const ProtectedRoute = ({ children }) => {
+const AuthRoute = ({ children }) => {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>; // Or your loading component
+        return <div>Loading...</div>;
     }
 
     if (!isAuthenticated) {
@@ -15,4 +15,4 @@ const ProtectedRoute = ({ children }) => {
     return children;
 };
 
-export default ProtectedRoute;
+export default AuthRoute;
