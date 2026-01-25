@@ -3,12 +3,14 @@ import { AuthProvider } from './contexts/AuthContext';
 import AuthRoute from './components/AuthRoute';
 import Login from './pages/Login';
 import Tasks from './pages/Tasks';
+import Header from './components/Header';
 import './App.css';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
