@@ -1,0 +1,45 @@
+.tasks-container {
+    margin: 0 auto;
+    padding: 2rem;
+    width: 500px
+}
+
+.tasks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.tasks-header h2 {
+    margin: 0;
+}
+
+.tasks-list {
+    margin-top: 1rem;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #888;
+}
+
+.empty-state p {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
