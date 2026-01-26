@@ -4,6 +4,7 @@ import AuthRoute from './components/AuthRoute';
 import Login from './pages/Login';
 import Tasks from './pages/Tasks';
 import Header from './components/Header';
+import NewTask from './pages/NewTask';
 import './App.css';
 
 function App() {
@@ -18,6 +19,14 @@ function App() {
             element={
               <AuthRoute>
                 <Tasks />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/tasks/new"
+            element={
+              <AuthRoute>
+                <NewTask />
               </AuthRoute>
             }
           />

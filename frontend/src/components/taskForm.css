@@ -1,0 +1,75 @@
+.task-form {
+    margin-bottom: 2rem;
+}
+
+.form-field {
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+.task-form-button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.task-form-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #646cff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+.task-form-button-cancel {
+    background-color: #f9f9f9;
+    color: #333;
+
+}
+
+.task-form-button:hover:not(:disabled) {
+    filter: brightness(0.9);
+}
+
+.task-form-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.task-form-error {
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: #ffebee;
+    border-radius: 4px;
+}
+
+.form-field-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    text-align: left;
+    display: block;
+}
+
+.required-asterisk {
+    color: #f44336;
+    margin-left: 0.25rem;
+}
+
+.form-field-error {
+    color: #f44336;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-top: 0.25rem;
+    text-align: left
+}

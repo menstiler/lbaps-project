@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api';
 import TaskItem from '../components/TaskItem';
 import './tasks.css';
@@ -38,12 +39,18 @@ const Tasks = () => {
         <div className="tasks-container">
             <div className="tasks-header">
                 <h2>My Tasks</h2>
+                <Link to="/tasks/new" className="new-task-button">
+                    + New Task
+                </Link>
             </div>
 
             <div className="tasks-list">
                 {tasks.length === 0 ? (
                     <div className="empty-state">
                         <p>No tasks.</p>
+                        <Link to="/tasks/new" className="new-task-link">
+                            Create your first task
+                        </Link>
                     </div>
                 ) : (
                     tasks.map(task => (
@@ -54,6 +61,12 @@ const Tasks = () => {
                     ))
                 )}
             </div>
+            {tasks.length > 0 && (
+                <Link to="/tasks/new">
+                    + Add Task
+                </Link>
+            )}
+
             {error && <div className="error-message">{error}</div>}
         </div>
     );
