@@ -31,9 +31,8 @@ export const AuthProvider = ({ children }) => {
                 password,
             });
 
-            const { access, refresh } = response.data;
+            const { access } = response.data;
             localStorage.setItem('access', access);
-            localStorage.setItem('refresh', refresh);
             setIsAuthenticated(true);
             return { success: true };
         } catch (error) {
@@ -47,7 +46,6 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('access');
-        localStorage.removeItem('refresh');
         setIsAuthenticated(false);
     };
 
