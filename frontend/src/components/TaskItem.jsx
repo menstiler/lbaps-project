@@ -1,12 +1,27 @@
 import './taskItem.css';
 
 const TaskItem = ({ task }) => {
+    const formatDate = (dateString) => {
+        if (!dateString) return null;
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    };
+
     return (
         <div className="task-item">
             <div className="task-item-content">
                 <div className="task-info">
                     {task.title && (
                         <span className="task-field task-title">{task.title}</span>
+                    )}
+                    {task.high_priority && (
+                        <span className="task-priority-badge">High Priority</span>
+                    )}
+                    {task.due_date && (
+                        <span className="task-due-date">Due: {formatDate(task.due_date)}</span>
+                    )}
+                    {task.notes && (
+                        <div className="task-notes"><span className="notes-label">Notes:</span> {task.notes}</div>
                     )}
                     {task.custom_fields && task.custom_fields.length > 0 && (
                         <div className="task-field task-fields-container">

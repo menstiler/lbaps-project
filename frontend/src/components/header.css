@@ -31,7 +31,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: background-color 0.2s;
-    margin-left: auto;
+    margin-right: 2rem;
 }
 
 .logout-button:hover {
@@ -48,13 +48,8 @@
 
 @media (max-width: 768px) {
     .header {
-        padding: 0 1rem;
-    }
-
-    .header-title {
-        position: static;
-        transform: none;
-        margin: 0 0 1rem;
-        font-size: 1.5rem;
+        width: 100%;
+        position: absolute;
+        padding: 0;
     }
 }

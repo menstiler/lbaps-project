@@ -107,7 +107,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
     def validate_task_form_field_order(self, value):
         """Validate that field order is a list of valid field names"""
-        valid_fields = ['title', 'custom_field']
+        valid_fields = ['title', 'custom_field', 'notes', 'due_date', 'high_priority']
         if not isinstance(value, list):
             raise serializers.ValidationError("Field order must be a list")
         for field in value:

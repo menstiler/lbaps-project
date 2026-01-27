@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
-import './taskForm.css';
 import { z } from 'zod';
 import { taskSchema } from '../validation/taskSchema';
+import FormField from './TaskFormFields/FormField';
+import CustomFormField from './TaskFormFields/CustomFormField';
+import './taskForm.css';
 
 const INITIAL_FORM_DATA = {
     title: '',
+    notes: '',
+    due_date: null,
+    high_priority: false,
     custom_field: {
         field_name: '',
         field_type: '',
@@ -45,96 +50,6 @@ const useFieldOrder = (defaultOrder) => {
     return [fieldOrder, setFieldOrder, saveFieldOrder];
 };
 
-// field components
-const TitleField = ({ value, error, onChange }) => (
-    <div className="task-form-title-row">
-        <div className="form-field form-field-full-width">
-            <label className="form-field-label">
-                Title
-                <span className="required-asterisk">*</span>
-                <input
-                    value={value}
-                    type="text"
-                    name="title"
-                    onChange={onChange}
-                    className="form-field-input form-field-string"
-                    placeholder="Enter task title"
-                />
-            </label>
-            {error && <div className="form-field-error">{error}</div>}
-        </div>
-    </div>
-);
-
-const CustomFieldSection = ({ formData, errors, fieldOptions, onChange }) => (
-    <div className="task-form-fields">
-        <div className="form-field">
-            <label className="form-field-label">
-                Field Name
-                <input
-                    value={formData.custom_field.field_name}
-                    type="text"
-                    name="custom_field.field_name"
-                    onChange={onChange}
-                    className="form-field-input"
-                    placeholder="Field name"
-                />
-            </label>
-            {errors?.field_name && (
-                <div className="form-field-error">{errors.field_name}</div>
-            )}
-        </div>
-
-        <div className="form-field">
-            <label className="form-field-label">Field Type</label>
-            <select
-                value={formData.custom_field.field_type}
-                name="custom_field.field_type"
-                onChange={onChange}
-                className="form-field-select"
-            >
-                <option value="">Select type</option>
-                {fieldOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
-            {errors?.field_type && (
-                <div className="form-field-error">{errors.field_type}</div>
-            )}
-        </div>
-
-        <div className="form-field">
-            <label className="form-field-label">Field Value</label>
-            {formData.custom_field.field_type === 'boolean' ? (
-                <select
-                    value={formData.custom_field.field_value}
-                    name="custom_field.field_value"
-                    onChange={onChange}
-                    className="form-field-select"
-                >
-                    <option value="">Select value</option>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>
-            ) : (
-                <input
-                    value={formData.custom_field.field_value}
-                    type={formData.custom_field.field_type === 'number' ? 'number' : 'text'}
-                    name="custom_field.field_value"
-                    onChange={onChange}
-                    className="form-field-input"
-                    placeholder="Enter value"
-                />
-            )}
-            {errors?.field_value && (
-                <div className="form-field-error">{errors.field_value}</div>
-            )}
-        </div>
-    </div>
-);
-
 const ReorderControls = ({ index, fieldOrderLength, onMoveUp, onMoveDown }) => (
     <div className="field-reorder-controls">
         <button
@@ -164,10 +79,11 @@ const TaskForm = () => {
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [fieldOrder, setFieldOrder, saveFieldOrder] = useFieldOrder(['title', 'custom_field']);
+    const [fieldOrder, setFieldOrder, saveFieldOrder] = useFieldOrder(['title', 'custom_field', 'notes', 'due_date', 'high_priority']);
 
-    const handleFieldChange = ({ target: { name, value } }) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const handleFieldChange = ({ target: { name, value, type, checked } }) => {
+        const fieldValue = type === 'checkbox' ? checked : value;
+        setFormData(prev => ({ ...prev, [name]: fieldValue }));
 
         if (name.includes('custom_field.')) {
             const field = name.split('custom_field.')[1];
@@ -245,8 +161,12 @@ const TaskForm = () => {
                 customValue = parseFloat(formData.custom_field.field_value);
             }
 
+            // Convert empty date string to null for backend
+            const dueDate = formData.due_date && formData.due_date.trim() !== '' ? formData.due_date : null;
+
             await api.post('/tasks/', {
                 ...formData,
+                due_date: dueDate,
                 custom_field: {
                     ...formData.custom_field,
                     field_value: customValue,
@@ -308,18 +228,60 @@ const TaskForm = () => {
 
     const fieldComponents = {
         title: (
-            <TitleField
+            <FormField
+                label="Title"
                 value={formData.title}
-                error={fieldErrors.title}
                 onChange={handleFieldChange}
-            />
+                type="text"
+                error={fieldErrors.title}
+                className="title"
+                name="title"
+                placeholder="Enter task title"
+                required={true}
+            />     
         ),
         custom_field: (
-            <CustomFieldSection
+            <CustomFormField
                 formData={formData}
                 errors={fieldErrors.custom_field}
                 fieldOptions={fieldOptions}
                 onChange={handleFieldChange}
+            />
+        ),
+        notes: (
+            <FormField
+                label="Notes"
+                value={formData.notes}
+                onChange={handleFieldChange}
+                type="textarea"
+                error={fieldErrors.notes}
+                className="notes"
+                name="notes"
+                placeholder="Enter notes"
+            />        
+        ),
+        due_date: (
+            <FormField
+                label="Due Date"
+                value={formData.due_date}
+                onChange={handleFieldChange}
+                type="date"
+                error={fieldErrors.due_date}
+                className="date"
+                name="due_date"
+                placeholder="Enter due date"
+            />
+        ),
+        high_priority: (
+            <FormField
+                label="High Priority"
+                value={formData.high_priority}
+                onChange={handleFieldChange}
+                type="checkbox"
+                error={fieldErrors.high_priority}
+                className="checkbox"
+                name="high_priority"
+                labelStyle={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             />
         )
     };

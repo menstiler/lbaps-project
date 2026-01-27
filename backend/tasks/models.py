@@ -5,6 +5,9 @@ from django.core.exceptions import ValidationError
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
+    notes = models.TextField(blank=True, null=True)
+    due_date = models.DateField(blank=True, null=True)
+    high_priority = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class TaskCustomField(models.Model):
@@ -39,5 +42,6 @@ class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
     task_form_field_order = models.JSONField(default=list, blank=True)
 
-    def __str__(self):
-        return f"{self.user.username}'s settings"
+    class Meta:
+        verbose_name_plural = "User settings"
+    
