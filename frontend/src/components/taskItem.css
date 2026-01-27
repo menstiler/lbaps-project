@@ -21,7 +21,38 @@
 
 .task-title {
     font-size: 1rem;
+    color: #333;
     line-height: 1.4;
     font-weight: 500;
     text-align: left;
+}
+
+.task-fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.task-custom-field {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    border-radius: 4px;
+}
+
+.task-custom-label {
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.task-custom-value {
+    font-size: 0.875rem;
+    color: #333;
+    font-weight: 400;
+}
+
+.task-field {
+    padding: 0.25rem 0;
 }
