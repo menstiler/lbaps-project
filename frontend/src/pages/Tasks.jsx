@@ -21,7 +21,7 @@ const Tasks = () => {
             setError('');
         } catch (err) {
             console.error('Error fetching tasks:', err);
-            setError('Failed to load tasks');
+            setError('Error loading tasks. Please refresh the page to try again.');
         } finally {
             setLoading(false);
         }
@@ -31,6 +31,14 @@ const Tasks = () => {
         return (
             <div className="tasks-container">
                 <div className="loading">Loading tasks...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="tasks-container">
+                <div className="error-message">{error}</div>
             </div>
         );
     }
@@ -66,8 +74,6 @@ const Tasks = () => {
                     + Add Task
                 </Link>
             )}
-
-            {error && <div className="error-message">{error}</div>}
         </div>
     );
 };

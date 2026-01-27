@@ -34,6 +34,18 @@
     margin-left: auto;
 }
 
+.logout-button:hover {
+    filter: brightness(0.9);
+}
+
+@media (prefers-color-scheme: light) {
+    .logout-button {
+        background-color: #f9f9f9;
+        color: #333;
+    }
+}
+
+
 @media (max-width: 768px) {
     .header {
         padding: 0 1rem;

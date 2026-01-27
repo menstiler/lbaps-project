@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task, TaskCustomField
+from .models import Task, TaskCustomField, UserSettings
 
 class TaskCustomFieldSerializer(serializers.ModelSerializer):
     """Serializer for reading custom field data"""
@@ -12,7 +12,6 @@ class TaskCustomFieldSerializer(serializers.ModelSerializer):
 
     def get_value(self, obj):
         return obj.field_value
-
 
 class TaskCustomFieldWriteSerializer(serializers.Serializer):
     """Serializer for writing custom field data"""
@@ -99,3 +98,19 @@ class TaskSerializer(serializers.ModelSerializer):
                 )
         
         return task
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSettings
+        fields = ['task_form_field_order']
+        read_only_fields = ['user']
+
+    def validate_task_form_field_order(self, value):
+        """Validate that field order is a list of valid field names"""
+        valid_fields = ['title', 'custom_field']
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Field order must be a list")
+        for field in value:
+            if field not in valid_fields:
+                raise serializers.ValidationError(f"Invalid field: {field}")
+        return value

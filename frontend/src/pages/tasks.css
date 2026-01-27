@@ -1,7 +1,12 @@
 .tasks-container {
     margin: 0 auto;
     padding: 2rem;
-    width: 500px
+    width: 500px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-top: 64px;
 }
 
 .tasks-header {
@@ -42,4 +47,31 @@
     padding: 1rem;
     border-radius: 4px;
     margin-top: 1rem;
+}
+
+.new-task-button {
+    padding: 0.5rem 1.5rem;
+    background-color: #646cff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    display: inline-block;
+}
+
+.new-task-button:hover {
+    color: white;
+    filter: brightness(0.9);
+}
+
+.new-task-link {
+    color: #646cff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.new-task-link:hover {
+    text-decoration: underline;
 }
