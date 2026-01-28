@@ -28,7 +28,7 @@ const TaskForm = () => {
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [fieldOrder, setFieldOrder, saveFieldOrder] = useFieldOrder(['title', 'custom_field', 'notes', 'due_date', 'high_priority']);
+    const [fieldOrder, setFieldOrder, saveFieldOrder] = useFieldOrder(['title', 'custom_field', 'due_date', 'high_priority', 'notes']);
     
     const handleReorder = (draggedIndex, dropIndex) => {
         const newOrder = [...fieldOrder];
