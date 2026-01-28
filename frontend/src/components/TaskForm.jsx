@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { z } from 'zod';
 import { taskSchema } from '../validation/taskSchema';
 import FormField from './TaskFormFields/FormField';
 import CustomFormField from './TaskFormFields/CustomFormField';
+import ReorderControls from './ReorderControls';
+import useDragAndDrop from '../hooks/useDragAndDrop';
+import useFieldOrder from '../hooks/useFieldOrder';
 import './taskForm.css';
 
 const INITIAL_FORM_DATA = {
     title: '',
     notes: '',
-    due_date: null,
+    due_date: '',
     high_priority: false,
     custom_field: {
         field_name: '',
@@ -19,60 +22,6 @@ const INITIAL_FORM_DATA = {
     }
 };
 
-// hooks for managing field order 
-const useFieldOrder = (defaultOrder) => {
-    const [fieldOrder, setFieldOrder] = useState(defaultOrder);
-
-    useEffect(() => {
-        const loadFieldOrder = async () => {
-            try {
-                const response = await api.get('/settings');
-                if (response.data?.task_form_field_order?.length > 0) {
-                    setFieldOrder(response.data.task_form_field_order);
-                }
-            } catch (err) {
-                console.error('Error loading field order:', err);
-            }
-        };
-        loadFieldOrder();
-    }, []);
-
-    const saveFieldOrder = async (newOrder) => {
-        try {
-            await api.put('/settings', {
-                task_form_field_order: newOrder
-            });
-        } catch (err) {
-            console.error('Error saving field order:', err);
-        }
-    };
-
-    return [fieldOrder, setFieldOrder, saveFieldOrder];
-};
-
-const ReorderControls = ({ index, fieldOrderLength, onMoveUp, onMoveDown }) => (
-    <div className="field-reorder-controls">
-        <button
-            type="button"
-            onClick={onMoveUp}
-            disabled={index === 0}
-            className="field-reorder-button"
-            title="Move up"
-        >
-            ^
-        </button>
-        <button
-            type="button"
-            onClick={onMoveDown}
-            disabled={index === fieldOrderLength - 1}
-            className="field-reorder-button down"
-            title="Move down"
-        >
-            ^
-        </button>
-    </div>
-);
-
 const TaskForm = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(INITIAL_FORM_DATA);
@@ -80,6 +29,30 @@ const TaskForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [fieldOrder, setFieldOrder, saveFieldOrder] = useFieldOrder(['title', 'custom_field', 'notes', 'due_date', 'high_priority']);
+    
+    const handleReorder = (draggedIndex, dropIndex) => {
+        const newOrder = [...fieldOrder];
+        const draggedField = newOrder[draggedIndex];
+        
+        // Remove dragged item
+        newOrder.splice(draggedIndex, 1);
+        
+        // Insert at new position
+        newOrder.splice(dropIndex, 0, draggedField);
+        
+        setFieldOrder(newOrder);
+        saveFieldOrder(newOrder);
+    };
+
+    const {
+        draggedIndex,
+        dragOverIndex,
+        handleDragStart,
+        handleDragOver,
+        handleDragLeave,
+        handleDrop,
+        handleDragEnd,
+    } = useDragAndDrop(handleReorder);
 
     const handleFieldChange = ({ target: { name, value, type, checked } }) => {
         const fieldValue = type === 'checkbox' ? checked : value;
@@ -289,17 +262,31 @@ const TaskForm = () => {
     return (
         <>
             <form onSubmit={handleSubmit} className="task-form">
-                {fieldOrder.map((fieldKey, index) => (
-                    <div key={fieldKey} className="reorderable-field-container">
-                        <ReorderControls
-                            index={index}
-                            fieldOrderLength={fieldOrder.length}
-                            onMoveUp={() => moveField(index, 'up')}
-                            onMoveDown={() => moveField(index, 'down')}
-                        />
-                        {fieldComponents[fieldKey]}
-                    </div>
-                ))}
+                {fieldOrder.map((fieldKey, index) => {
+                     const isDragging = draggedIndex === index;
+                     const isDragOver = dragOverIndex === index;
+                    
+                     return (
+                        <div 
+                            key={fieldKey} 
+                            className={`reorderable-field-container ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''}`}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, index)}
+                            onDragOver={(e) => handleDragOver(e, index)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => handleDrop(e, index)}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <ReorderControls
+                                index={index}
+                                fieldOrderLength={fieldOrder.length}
+                                onMoveUp={() => moveField(index, 'up')}
+                                onMoveDown={() => moveField(index, 'down')}
+                            />
+                            {fieldComponents[fieldKey]}
+                        </div>
+                    )
+                })} 
                 {error && <div className="task-form-error">{error}</div>}
                 <div className="task-form-button-container">
                     <button

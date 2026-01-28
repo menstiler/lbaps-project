@@ -35,14 +35,6 @@ const Tasks = () => {
         );
     }
 
-    if (error) {
-        return (
-            <div className="tasks-container">
-                <div className="error-message">{error}</div>
-            </div>
-        );
-    }
-
     return (
         <div className="tasks-container">
             <div className="tasks-header">
@@ -51,29 +43,37 @@ const Tasks = () => {
                     + New Task
                 </Link>
             </div>
-
-            <div className="tasks-list">
-                {tasks.length === 0 ? (
-                    <div className="empty-state">
-                        <p>No tasks.</p>
-                        <Link to="/tasks/new" className="new-task-link">
-                            Create your first task
-                        </Link>
+            {error ? (
+                  <div className="tasks-container">
+                  <div className="error-message">{error}</div>
+              </div>
+            )
+            : (
+                <>
+                    <div className="tasks-list">
+                        {tasks.length === 0 ? (
+                            <div className="empty-state">
+                                <p>No tasks.</p>
+                                <Link to="/tasks/new" className="new-task-link">
+                                    Create your first task
+                                </Link>
+                            </div>
+                        ) : (
+                            tasks.map(task => (
+                                <TaskItem
+                                    key={task.id}
+                                    task={task}
+                                />
+                            ))
+                        )}
                     </div>
-                ) : (
-                    tasks.map(task => (
-                        <TaskItem
-                            key={task.id}
-                            task={task}
-                        />
-                    ))
-                )}
-            </div>
-            {tasks.length > 0 && (
-                <Link to="/tasks/new">
-                    + Add Task
-                </Link>
-            )}
+                    {tasks.length > 0 && (
+                        <Link to="/tasks/new">
+                            + Add Task
+                        </Link>
+                    )}
+                </>
+            )}            
         </div>
     );
 };
